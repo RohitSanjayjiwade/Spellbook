@@ -9,7 +9,11 @@ const prisma = new PrismaClient()
 
 export const spellbooksRouter = router({
 	get: publicProcedure.query(async () => {
-		return prisma.spellbook.findMany();
+		return prisma.spellbook.findMany({
+			include: {
+				spells: true,
+			}
+		});
 	}),
 	create: publicProcedure.input(z.object({
 		title: z.string(),
@@ -25,8 +29,8 @@ export const spellbooksRouter = router({
 	}),
 	getById: publicProcedure.input(z.object({
 		id: z.number(),
-	})).query(async(opts) => {
-		const {input} = opts;
+	})).query(async (opts) => {
+		const { input } = opts;
 		return await prisma.spellbook.findFirst({
 			where: {
 				id: input.id,
