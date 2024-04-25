@@ -5,23 +5,22 @@ import { trpc } from "@/server/client";
 
 export default function Spellbook() {
 
-  const spells = trpc.spells.get.useQuery();
+  const spellbooks = trpc.spellbooks.get.useQuery();
   
   return (
-    <div>
-      {JSON.stringify(spells.data)}
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
+    <div className="grid grid-cols-4 gap-5">
+      {spellbooks.data?.map((spellbook) => (
+        <Card key={spellbook.id}>
+          <CardHeader>
+            <CardTitle>{spellbook.title}</CardTitle>
+            <CardDescription>{spellbook.description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>spells</p>
+          </CardContent>
+        </Card>
+      ))}
+      
 
     </div>
   );
