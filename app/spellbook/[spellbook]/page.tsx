@@ -22,6 +22,8 @@ export default function SpellbookPage({
 
 	const addSpell = trpc.spells.create.useMutation();
 
+	const deleteSpell = trpc.spells.delete.useMutation();
+
 	const addNewSpell = () => {
 		if(!spellbook.data?.id)
 		{
@@ -36,6 +38,12 @@ export default function SpellbookPage({
 
 		setTitle("");
 		setDescription("");
+	};
+
+	const delSpell = (id: number) => {
+		deleteSpell.mutate({
+			id,
+		})
 	}
 
 	const [title, setTitle] = useState<string>("");
@@ -88,7 +96,7 @@ export default function SpellbookPage({
 									<Image src={spell.image} width={50} height={50} alt={spell.title} />
 								)}
 							</TableCell>
-							<TableCell><Button>Delete</Button></TableCell>
+							<TableCell><Button onClick={() => delSpell(spell.id)}>Delete</Button></TableCell>
 						</TableRow>
 					))}
 					
