@@ -18,7 +18,7 @@ export const spellsRouter = router({
 		spellbookId: z.number(),
 	})).mutation(async (opts) => {
 		const { input } = opts;
-		prisma.spell.create({
+		await prisma.spell.create({
 			data: {
 				title: input.title,
 				description: input.description,
@@ -31,7 +31,7 @@ export const spellsRouter = router({
 		id: z.number(),
 	})).mutation(async (opts) => {
 		const { input } = opts;
-		prisma.spell.delete({
+		await prisma.spell.delete({
 			where: {
 				id: input.id,
 			},
