@@ -20,30 +20,48 @@ export default function SpellbookPage({
 		id: +params.spellbook,
 	})
 
-	const addSpell = trpc.spells.create.useMutation();
+	const addSpell = trpc.spells.create.useMutation({
+		onSettled: () => {
+			spellbook.refetch();
+		}
+	});
 
 	const deleteSpell = trpc.spells.delete.useMutation();
 
 	const addNewSpell = () => {
-		if(!spellbook.data?.id)
-		{
+		if (!spellbook.data?.id) {
 			return;
 		}
-		addSpell.mutate({
-			title,
-			description,
-			spellbookId: spellbook.data?.id,
-			image: "",
-		});
+		if (fileRef.current?.files) {
+			const formData = new FormData();
+			const file = fileRef.current?.files[0];
+			formData.append("files", file);
+			const request = {method: "POST", body: formData};
+			fetch("/api/file", request);
 
-		setTitle("");
-		setDescription("");
+			addSpell.mutate({
+				title,
+				description,
+				spellbookId: spellbook.data?.id,
+				image: `/${file.name}`,
+			});
+
+			setTitle("");
+			setDescription("");
+		}
+		
+		
 	};
 
 	const delSpell = (id: number) => {
 		deleteSpell.mutate({
 			id,
-		})
+		},
+			{
+				onSettled: () => {
+					spellbook.refetch();
+				}
+			})
 	}
 
 	const [title, setTitle] = useState<string>("");
