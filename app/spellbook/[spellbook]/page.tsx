@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { trpc } from "@/server/client";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { json } from "stream/consumers";
 
 
@@ -20,8 +20,29 @@ export default function SpellbookPage({
 		id: +params.spellbook,
 	})
 
+	const addSpell = trpc.spells.create.useMutation();
+
+	const addNewSpell = () => {
+		if(!spellbook.data?.id)
+		{
+			return;
+		}
+		addSpell.mutate({
+			title,
+			description,
+			spellbookId: spellbook.data?.id,
+			image: "",
+		});
+
+		setTitle("");
+		setDescription("");
+	}
+
 	const [title, setTitle] = useState<string>("");
 	const [description, setDescription] = useState<string>("");
+	const fileRef = useRef<HTMLInputElement>(null);
+
+
 	return (
 		<div className="p-24">
 			<Dialog>
@@ -39,12 +60,14 @@ export default function SpellbookPage({
 							<Input value={title} onChange={(e) => setTitle(e.target.value)} />
 							<p>Description:</p>
 							<Input value={description} onChange={(e) => setDescription(e.target.value)} />
-							<Button >Save</Button>
+							<p>Image:</p>
+							<Input type="file" ref={fileRef} />
+							<Button onClick={addNewSpell}>Save</Button>
 						</div>
 					</DialogHeader>
 				</DialogContent>
 			</Dialog>
-			
+
 			<Table>
 				<TableCaption>Spells from {spellbook.data?.title}.</TableCaption>
 				<TableHeader>
