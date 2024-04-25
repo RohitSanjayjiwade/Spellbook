@@ -23,6 +23,19 @@ export const spellbooksRouter = router({
 			},
 		});
 	}),
+	getById: publicProcedure.input(z.object({
+		id: z.number(),
+	})).query(async(opts) => {
+		const {input} = opts;
+		return await prisma.spellbook.findFirst({
+			where: {
+				id: input.id,
+			},
+			include: {
+				spells: true,
+			}
+		})
+	}),
 	delete: publicProcedure.input(z.object({
 		id: z.number(),
 	})).mutation(async (opts) => {
