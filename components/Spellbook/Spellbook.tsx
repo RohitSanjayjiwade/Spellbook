@@ -12,7 +12,11 @@ import Link from "next/link";
 export default function Spellbook() {
 
   const spellbooks = trpc.spellbooks.get.useQuery();
-  const addSpellbook = trpc.spellbooks.create.useMutation();
+  const addSpellbook = trpc.spellbooks.create.useMutation({
+    onSettled: () => {
+      spellbooks.refetch();
+    }
+  });
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -27,15 +31,15 @@ export default function Spellbook() {
   return (
     <div className="grid grid-cols-4 gap-5">
       {spellbooks.data?.map((spellbook) => (
-        <Link key={spellbook.id} href={`/spellbook/${spellbook.id}`}>
-        <Card>
+        <Link key={spellbook.id} href={`/spellbook/${spellbook.id}`} className="transition duration-300 ease-in-out shadow-md rounded-md border-2 border-slate-700 hover:shadow-xl hover:shadow-cyan-500/50">
+        <Card className="outline-transparent border-none">
           <CardHeader>
             <CardTitle>{spellbook.title}</CardTitle>
             <CardDescription>{spellbook.description}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex gap-2">
             {spellbook.spells.map((spell) => (
-              <Image key={spell.id} src={spell.image ?? ""} width={30} height={30} alt={spell.title} />
+              <Image key={spell.id} src={spell.image ?? ""} className="object-cover border-2 border-white w-10 h-10 rounded-lg" width={30} height={30} alt={spell.title} />
             ))}
           </CardContent>
         </Card>

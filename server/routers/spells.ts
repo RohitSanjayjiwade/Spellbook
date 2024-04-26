@@ -27,6 +27,20 @@ export const spellsRouter = router({
 			},
 		});
 	}),
+	update: publicProcedure.input(z.object({
+		id: z.number(),
+		title: z.string().optional(),
+		description: z.string().optional(),
+		image: z.string().optional(),
+		spellbookId: z.number().optional(),
+	})).mutation(async (opts) => {
+		const { input } = opts;
+		const { id, ...updateData } = input;
+		await prisma.spell.update({
+			where: { id },
+			data: updateData,
+		});
+	}),
 	delete: publicProcedure.input(z.object({
 		id: z.number(),
 	})).mutation(async (opts) => {
